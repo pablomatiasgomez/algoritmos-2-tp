@@ -6,6 +6,7 @@ import algoritmos.tp.def.Label;
 import algoritmos.tp.def.Title;
 
 public class LabelImpleTrucha implements Label {
+    
 	private String name;
 
 	public LabelImpleTrucha(String name) {
@@ -19,11 +20,12 @@ public class LabelImpleTrucha implements Label {
 
 	@Override
 	public List<Title> getTitles() {
+	    // TODO
 		return null;
 	}
 
 	@Override
-	public List<String> getSublabels() {
+	public List<Label> getSublabels() {
 		// TODO Auto-generated method stub
 		return null;
 	}
