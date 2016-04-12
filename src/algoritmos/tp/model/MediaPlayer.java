@@ -1,4 +1,4 @@
-package model;
+package algoritmos.tp.model;
 
 import java.util.ArrayList;
 import java.util.stream.Collectors;

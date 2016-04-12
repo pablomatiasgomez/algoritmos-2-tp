@@ -1,4 +1,4 @@
-package model;
+package algoritmos.tp.model;
 
 import java.util.Hashtable;
 import java.util.List;

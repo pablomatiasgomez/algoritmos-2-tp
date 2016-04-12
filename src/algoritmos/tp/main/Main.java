@@ -5,12 +5,12 @@ import java.util.List;
 import algoritmos.tp.def.Filter;
 import algoritmos.tp.def.Label;
 import algoritmos.tp.def.Library;
-import algoritmos.tp.impl.LibraryImpleTrucha;
+import algoritmos.tp.model.LibraryImpl;
 
 public class Main {
 	public static void main(String[] args) {
 		
-		Library lib = new LibraryImpleTrucha();
+		Library lib = new LibraryImpl();
 		List<Filter> filtros = lib.getFilters();
 
 		for (Filter f : filtros) {
