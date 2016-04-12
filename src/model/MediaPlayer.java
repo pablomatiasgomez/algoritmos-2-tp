@@ -1,6 +1,7 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 public class MediaPlayer {
 
@@ -9,13 +10,14 @@ public class MediaPlayer {
 	
 
 	public ArrayList<Titulo> buscarTitulos(String path) {
-		// Para cada autor, crear un disco por cada subcarpeta
+		// Busco todas las carpetas del path 
+		// Para cada carpeta que tenga el archivo info.xxx creo el titulo 
+		// Esta creado el metodo para crear un disco a partir del path
+		
 		return null;
 	}
 
-	private ArrayList<String> buscarCanciones(String path) {
-		return null;
-	}
+	
 
 	private Titulo crearCancion(String path) {
 		Titulo titulo = new Titulo();
@@ -23,23 +25,24 @@ public class MediaPlayer {
 		String name = buscarNombreTitulo(path);
 		titulo.setName(name);
 
-		ArrayList<String> canciones = buscarCancionesDelDisco(path);
-		titulo.setCanciones(canciones);
+		agregarCancionesDelDisco(titulo, path);
+	
 
 		return titulo;
 
 	}
 
-	private ArrayList<String> buscarCancionesDelDisco(String path) {
-		// TODO Auto-generated method stub
-		// buscar todos los archivos
+	private void agregarCancionesDelDisco(Titulo titulo, String path) {
+		
+		// buscar todos los archivos de la carpeta
 		ArrayList<String> archivos = archivosDeLaCarpeta(path);
-
-		archivos.stream().filter(archivo -> extensionValida(archivo));
-
-		// filtrar las extensiones validas
-
-		return archivos;
+		// filtrar archivos de extension validas
+		ArrayList<String> canciones = archivos.stream()
+											  .filter(archivo -> extensionValida(archivo))
+											  .collect(Collectors.toCollection(ArrayList::new));
+		// agregar las canciones al titulo
+		titulo.setCanciones(canciones);
+		
 	}
 
 	private boolean extensionValida(String a) {
