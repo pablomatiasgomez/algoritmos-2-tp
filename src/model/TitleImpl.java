@@ -1,6 +1,5 @@
 package model;
 
-import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -8,34 +7,39 @@ import algoritmos.tp.def.Filter;
 import algoritmos.tp.def.Label;
 import algoritmos.tp.def.Title;
 
-public class Titulo implements Title{
-	
+public class TitleImpl implements Title {
+
 	private String name;
-	private ArrayList<String> canciones;
-	
-	public ArrayList<String> getCanciones() {
-		return canciones;
+	private String path;
+	private Hashtable<Filter, List<Label>> atts;
+
+	// TODO check if necessary.
+	public TitleImpl() {
 	}
-	public void setCanciones(ArrayList<String> canciones) {
-		this.canciones = canciones;
+
+	public TitleImpl(String name, String path, Hashtable<Filter, List<Label>> atts) {
+		this.name = name;
+		this.path = path;
+		this.atts = atts;
 	}
+
+	@Override
 	public String getName() {
-		return name;
+		return this.name;
 	}
+
 	public void setName(String name) {
 		this.name = name;
 	}
+
 	@Override
 	public String getPath() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.path;
 	}
+
 	@Override
 	public Hashtable<Filter, List<Label>> getAtts() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.atts;
 	}
-	
-	
 
 }

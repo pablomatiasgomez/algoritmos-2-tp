@@ -5,11 +5,11 @@ import java.util.stream.Collectors;
 
 public class MediaPlayer {
 
-	private ArrayList<Titulo> titles;
-	private ArrayList<Filtro> filtros;
+	private ArrayList<TitleImpl> titles;
+	private ArrayList<FilterImpl> filtros;
 	
 
-	public ArrayList<Titulo> buscarTitulos(String path) {
+	public ArrayList<TitleImpl> buscarTitulos(String path) {
 		// Busco todas las carpetas del path 
 		// Para cada carpeta que tenga el archivo info.xxx creo el titulo 
 		// Esta creado el metodo para crear un disco a partir del path
@@ -19,8 +19,8 @@ public class MediaPlayer {
 
 	
 
-	private Titulo crearCancion(String path) {
-		Titulo titulo = new Titulo();
+	private TitleImpl crearCancion(String path) {
+		TitleImpl titulo = new TitleImpl();
 
 		String name = buscarNombreTitulo(path);
 		titulo.setName(name);
@@ -32,7 +32,7 @@ public class MediaPlayer {
 
 	}
 
-	private void agregarCancionesDelDisco(Titulo titulo, String path) {
+	private void agregarCancionesDelDisco(TitleImpl titulo, String path) {
 		
 		// buscar todos los archivos de la carpeta
 		ArrayList<String> archivos = archivosDeLaCarpeta(path);
@@ -41,7 +41,8 @@ public class MediaPlayer {
 											  .filter(archivo -> extensionValida(archivo))
 											  .collect(Collectors.toCollection(ArrayList::new));
 		// agregar las canciones al titulo
-		titulo.setCanciones(canciones);
+		// TODO ver que onda con el profe
+		// titulo.setCanciones(canciones);
 		
 	}
 

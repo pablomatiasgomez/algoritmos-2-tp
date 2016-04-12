@@ -4,6 +4,7 @@ import java.util.Hashtable;
 import java.util.List;
 
 public interface Title {
+
 	public String getName();
 
 	public String getPath();
