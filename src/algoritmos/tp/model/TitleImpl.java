@@ -13,10 +13,6 @@ public class TitleImpl implements Title {
 	private String path;
 	private Hashtable<Filter, List<Label>> atts;
 
-	// TODO check if necessary.
-	public TitleImpl() {
-	}
-
 	public TitleImpl(String name, String path, Hashtable<Filter, List<Label>> atts) {
 		this.name = name;
 		this.path = path;

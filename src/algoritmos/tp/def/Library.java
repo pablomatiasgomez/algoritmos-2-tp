@@ -3,6 +3,7 @@ package algoritmos.tp.def;
 import java.util.List;
 
 public interface Library {
+
 	public List<Title> getTitles();
 
 	public List<Filter> getFilters();

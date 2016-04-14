@@ -3,6 +3,7 @@ package algoritmos.tp.def;
 import java.util.Hashtable;
 import java.util.List;
 
+
 public interface Title {
 
 	public String getName();
