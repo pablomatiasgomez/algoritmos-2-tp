@@ -1,0 +1,10 @@
+<app-config>
+  <file-structure>
+    <albums-path>./albums</albums-path>
+  </file-structure>
+
+  <labels>
+    <divider>|</divider>
+  </labels>
+
+</app-config>

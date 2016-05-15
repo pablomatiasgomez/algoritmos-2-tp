@@ -18,6 +18,7 @@ public class LibraryImpl implements Library {
 
 	private List<Title> titles;
 	private List<Filter> filters;
+	private Config config;
 
 	private static LibraryImpl instance;
 	
@@ -29,7 +30,10 @@ public class LibraryImpl implements Library {
 	}
 	
 	private LibraryImpl() {
-		// TODO inicializar todo aca
+		config = new Config("config.xml");
+		
+		buscarTitulos(config.getAlbumsPath());
+		
 	}
 
 	@Override
@@ -61,9 +65,6 @@ public class LibraryImpl implements Library {
 	public List<Title> getTitles(Filter filter, Label label) {
 		return label.getTitles();
 	}
-	
-
-
 
 	public List<Title> buscarTitulos(String path) {
 
@@ -98,7 +99,7 @@ public class LibraryImpl implements Library {
 			String line = sc.nextLine();
 			String[] split = line.split("=");
 			String filterName = split[0];
-			String[] labelNames= split[1].split("|"); // TODO char de config
+			String[] labelNames= split[1].split(config.getLabelDivider());
 			
 			List<Label> labels = Stream.of(labelNames).map(LabelImpl::new).collect(Collectors.toList());
 			Filter filter = new FilterImpl(filterName, labels); // TODO en verdad estos no son todos los labels de filter, sino solo los que aplican a este disco..
@@ -124,5 +125,4 @@ public class LibraryImpl implements Library {
 
 		return titleInfoFile;
 	}
-
 }
