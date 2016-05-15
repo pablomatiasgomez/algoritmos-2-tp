@@ -2,9 +2,11 @@ package algoritmos.tp.model;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -18,6 +20,7 @@ public class LibraryImpl implements Library {
 
 	private List<Title> titles;
 	private List<Filter> filters;
+	private List<Label> labels;
 	private Config config;
 
 	private static LibraryImpl instance;
@@ -30,6 +33,10 @@ public class LibraryImpl implements Library {
 	}
 	
 	private LibraryImpl() {
+		this.titles = new ArrayList<Title>();
+		this.filters = new ArrayList<Filter>();
+		this.labels = new ArrayList<Label>();
+
 		config = new Config("config.xml");
 		
 		buscarTitulos(config.getAlbumsPath());
@@ -89,24 +96,60 @@ public class LibraryImpl implements Library {
 	private Title crearTitulo(String name, String path, File titleInfoFile) {
 		// TODO preguntar filter tiene getTitles, el mapa no tendria sentido?
 		Hashtable<Filter, List<Label>> attributes = procesarInfoFile(titleInfoFile);
-		return new TitleImpl(name, path, attributes);
+		Title title = new TitleImpl(name, path, attributes);
+		attributes.values().forEach(labelList -> labelList.forEach(label -> {label.addTitle(title);}));
+		this.titles.add(title);
+		return title;
 	}
 
 	private Hashtable<Filter, List<Label>> procesarInfoFile(File infoFile)  {
 		Scanner sc = this.getScanner(infoFile);
+		Hashtable<Filter, List<Label>> info = new Hashtable<Filter, List<Label>>();
 		
 		while (sc.hasNextLine()) {
+						
 			String line = sc.nextLine();
-			String[] split = line.split("=");
+			if (line.isEmpty()) break;// Algunos archivos JML tienen lineas vacias al final
+
+			String[] split = line.split("="); // FIXME Algunos titulos tienen "=" en el nombre
+			if (split.length < 2) break ;// Algunos Filters no tienen Label asociadas
 			String filterName = split[0];
-			String[] labelNames= split[1].split(config.getLabelDivider());
+			String[] labelNames= split[1].split( String.format("\\%s", config.getLabelDivider()));
 			
-			List<Label> labels = Stream.of(labelNames).map(LabelImpl::new).collect(Collectors.toList());
-			Filter filter = new FilterImpl(filterName, labels); // TODO en verdad estos no son todos los labels de filter, sino solo los que aplican a este disco..
+			
+			List<Label> labels = Stream.of(labelNames).map(labelName -> createLabel(labelName)).collect(Collectors.toList());
+			Filter filter = createFilter(filterName, labels);
+			info.put(filter, labels);
 		}
 		sc.close();
-		// TODO terminar
-		return null;
+		return info;
+	}
+	
+	private Filter createFilter(String filterName, List<Label> labels) {
+		Optional<Filter> filter = this.filters
+			    .stream()
+			    .filter((f)-> f.getName().equals((filterName)))
+			    .findFirst();
+		if (filter.isPresent()) {
+			((Filter) filter.get()).addLabels(labels);
+			return (Filter) filter.get();
+		}
+		FilterImpl new_filter = new FilterImpl(filterName, labels);
+		this.filters.add(new_filter);
+		return new_filter;
+	}
+
+	private Label createLabel(String labelName){
+		Optional<Label> label = this.labels
+			    .stream()
+			    .filter((l)-> l.getName().equals((labelName)))
+			    .findFirst();
+		if (label.isPresent()) {
+			return (Label) label.get();
+		}
+		LabelImpl new_label = new LabelImpl(labelName);
+		this.labels.add(new_label);
+		return  new_label;
 	}
 	
 	private Scanner getScanner(File file) {

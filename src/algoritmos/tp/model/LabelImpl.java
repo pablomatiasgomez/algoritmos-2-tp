@@ -1,5 +1,6 @@
 package algoritmos.tp.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import algoritmos.tp.def.Label;
@@ -12,7 +13,13 @@ public class LabelImpl implements Label {
 	private List<Label> sublabels;
 
 	public LabelImpl(String name) {
+		this.titles = new ArrayList<Title>();
 		this.name = name;
+		
+	}
+	
+	public void addTitle(Title title){
+		this.titles.add(title);;
 	}
 
 	@Override

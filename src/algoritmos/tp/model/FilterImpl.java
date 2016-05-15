@@ -14,6 +14,10 @@ public class FilterImpl implements Filter {
 		this.name = name;
 		this.labels = labels;
 	}
+	
+	public void addLabels(List<Label> labels){
+		this.labels.addAll(labels);
+	}
 
 	@Override
 	public String getName() {
