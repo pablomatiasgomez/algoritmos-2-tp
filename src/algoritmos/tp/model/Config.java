@@ -1,41 +1,55 @@
 package algoritmos.tp.model;
 
 import java.io.File;
-import javax.xml.parsers.DocumentBuilderFactory;
+
 import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
 import org.w3c.dom.Document;
 
 public class Config {
 
 	private Document configFile;
-	
+
 	private String albumsPath;
 	private String labelDivider;
-	
+	private String infoFileName;
+
 	public Config(String configPath) {
-		configFile = setConfigFile(configPath);
+		this.configFile = this.setConfigFile(configPath);
 	}
 
 	public String getAlbumsPath() {
-		if (albumsPath == null) {
-			albumsPath = setAlbumsPath();
-		}	
-		return albumsPath;
+		if (this.albumsPath == null) {
+			this.albumsPath = this.getAlbumsPathFromConfigFile();
+		}
+		return this.albumsPath;
 	}
 
-	private String setAlbumsPath() {
-		return configFile.getElementsByTagName("albums-path").item(0).getTextContent();
+	private String getAlbumsPathFromConfigFile() {
+		return this.configFile.getElementsByTagName("albums-path").item(0).getTextContent();
 	}
 
 	public String getLabelDivider() {
-		if (labelDivider == null) {
-			labelDivider = setLabelDivider();
-		}	
-		return labelDivider;
+		if (this.labelDivider == null) {
+			this.labelDivider = this.getLabelDividerFromConfigFile();
+		}
+		return this.labelDivider;
 	}
-	
-	private String setLabelDivider() {
-		return configFile.getElementsByTagName("divider").item(0).getTextContent();
+
+	private String getLabelDividerFromConfigFile() {
+		return this.configFile.getElementsByTagName("divider").item(0).getTextContent();
+	}
+
+	public String getInfoFileName() {
+		if (this.infoFileName == null) {
+			this.infoFileName = this.getInfoFileNameFromConfigFile();
+		}
+		return this.infoFileName;
+	}
+
+	private String getInfoFileNameFromConfigFile() {
+		return this.configFile.getElementsByTagName("info-file-name").item(0).getTextContent();
 	}
 
 	private Document setConfigFile(String configPath) {
@@ -45,8 +59,9 @@ public class Config {
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 			return dBuilder.parse(inputFile);
 		} catch (Exception e) {
-			e.printStackTrace();
-		}	
-		return null;
+			throw new RuntimeException(e);
+		}
 	}
+
+
 }

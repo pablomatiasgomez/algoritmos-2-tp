@@ -13,7 +13,7 @@ public class Main {
 				System.out.println("\t" + label.getName());
 				label.getTitles().stream().forEach(title-> {
 					System.out.println("\t\t" +title.getName());
-					System.out.println("\t\t" +title.getPath());
+					//System.out.println("\t\t" +title.getPath());
 				});
 			});
 		});

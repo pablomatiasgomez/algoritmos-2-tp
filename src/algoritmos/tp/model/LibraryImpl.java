@@ -3,11 +3,13 @@ package algoritmos.tp.model;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -19,28 +21,27 @@ import algoritmos.tp.def.Title;
 public class LibraryImpl implements Library {
 
 	private List<Title> titles;
-	private List<Filter> filters;
-	private List<Label> labels;
+	private Set<Filter> filters;
+	private Set<Label> labels;
 	private Config config;
 
 	private static LibraryImpl instance;
-	
+
 	public static synchronized LibraryImpl getInstance() {
 		if (instance == null) {
 			instance = new LibraryImpl();
 		}
 		return instance;
 	}
-	
+
 	private LibraryImpl() {
 		this.titles = new ArrayList<Title>();
-		this.filters = new ArrayList<Filter>();
-		this.labels = new ArrayList<Label>();
+		this.filters = new HashSet<Filter>();
+		this.labels = new HashSet<Label>();
 
-		config = new Config("config.xml");
-		
-		buscarTitulos(config.getAlbumsPath());
-		
+		this.config = new Config("config.xml");
+
+		this.searchTitles(this.config.getAlbumsPath());
 	}
 
 	@Override
@@ -50,7 +51,7 @@ public class LibraryImpl implements Library {
 
 	@Override
 	public List<Filter> getFilters() {
-		return this.filters;
+		return new ArrayList<>(this.filters);
 	}
 
 	@Override
@@ -73,7 +74,7 @@ public class LibraryImpl implements Library {
 		return label.getTitles();
 	}
 
-	public List<Title> buscarTitulos(String path) {
+	public List<Title> searchTitles(String path) {
 
 		File[] folders = new File(path).listFiles();
 
@@ -83,9 +84,9 @@ public class LibraryImpl implements Library {
 			}
 			return Stream.empty();
 		}).filter(File::isDirectory).map(folder -> {
-			File titleInfoFile = getTilteInfoFile(folder);
+			File titleInfoFile = this.getTilteInfoFile(folder);
 			if (titleInfoFile != null) {
-				return crearTitulo(folder.getName(), folder.getAbsolutePath(), titleInfoFile);
+				return this.createTitle(folder.getName(), folder.getAbsolutePath(), titleInfoFile);
 			}
 			return null;
 		}).filter(Objects::nonNull).collect(Collectors.toList());
@@ -93,65 +94,69 @@ public class LibraryImpl implements Library {
 		return titles;
 	}
 
-	private Title crearTitulo(String name, String path, File titleInfoFile) {
-		// TODO preguntar filter tiene getTitles, el mapa no tendria sentido?
-		Hashtable<Filter, List<Label>> attributes = procesarInfoFile(titleInfoFile);
+	private Title createTitle(String name, String path, File titleInfoFile) {
+		Hashtable<Filter, List<Label>> attributes = this.processInfoFile(titleInfoFile);
 		Title title = new TitleImpl(name, path, attributes);
 		attributes.values().forEach(labelList -> labelList.forEach(label -> {label.addTitle(title);}));
 		this.titles.add(title);
 		return title;
 	}
 
-	private Hashtable<Filter, List<Label>> procesarInfoFile(File infoFile)  {
+	private Hashtable<Filter, List<Label>> processInfoFile(File infoFile)  {
 		Scanner sc = this.getScanner(infoFile);
-		Hashtable<Filter, List<Label>> info = new Hashtable<Filter, List<Label>>();
-		
-		while (sc.hasNextLine()) {
-						
-			String line = sc.nextLine();
-			if (line.isEmpty()) break;// Algunos archivos JML tienen lineas vacias al final
+		Hashtable<Filter, List<Label>> attributes = new Hashtable<Filter, List<Label>>();
 
-			String[] split = line.split("="); // FIXME Algunos titulos tienen "=" en el nombre
-			if (split.length < 2) break ;// Algunos Filters no tienen Label asociadas
+		while (sc.hasNextLine()) {
+
+			String line = sc.nextLine();
+			if (line.isEmpty()) {
+				continue;
+			}
+
+			String[] split = line.split("=", 2);
+			if (split.length < 2) {
+				continue;
+			}
 			String filterName = split[0];
-			String[] labelNames= split[1].split( String.format("\\%s", config.getLabelDivider()));
-			
-			
-			List<Label> labels = Stream.of(labelNames).map(labelName -> createLabel(labelName)).collect(Collectors.toList());
-			Filter filter = createFilter(filterName, labels);
-			info.put(filter, labels);
+			String[] labelNames= split[1].split(String.format("\\%s", this.config.getLabelDivider()));
+
+			List<Label> labels = Stream.of(labelNames).map(labelName -> this.createLabel(labelName)).collect(Collectors.toList());
+			Filter filter = this.createFilter(filterName, labels);
+			attributes.put(filter, labels);
 		}
 		sc.close();
-		return info;
+		return attributes;
 	}
-	
+
 	private Filter createFilter(String filterName, List<Label> labels) {
 		Optional<Filter> filter = this.filters
-			    .stream()
-			    .filter((f)-> f.getName().equals((filterName)))
-			    .findFirst();
+				.stream()
+				.filter(f-> f.getName().equals(filterName))
+				.findFirst();
+
 		if (filter.isPresent()) {
-			((Filter) filter.get()).addLabels(labels);
-			return (Filter) filter.get();
+			filter.get().addLabels(labels);
+			return filter.get();
 		}
-		FilterImpl new_filter = new FilterImpl(filterName, labels);
-		this.filters.add(new_filter);
-		return new_filter;
+		FilterImpl newFilter = new FilterImpl(filterName, labels);
+		this.filters.add(newFilter);
+		return newFilter;
 	}
 
 	private Label createLabel(String labelName){
 		Optional<Label> label = this.labels
-			    .stream()
-			    .filter((l)-> l.getName().equals((labelName)))
-			    .findFirst();
+				.stream()
+				.filter(l-> l.getName().equals(labelName))
+				.findFirst();
+
 		if (label.isPresent()) {
-			return (Label) label.get();
+			return label.get();
 		}
-		LabelImpl new_label = new LabelImpl(labelName);
-		this.labels.add(new_label);
-		return  new_label;
+		LabelImpl newLabel = new LabelImpl(labelName);
+		this.labels.add(newLabel);
+		return  newLabel;
 	}
-	
+
 	private Scanner getScanner(File file) {
 		try {
 			return new Scanner(file);
@@ -161,10 +166,10 @@ public class LibraryImpl implements Library {
 	}
 
 	private File getTilteInfoFile(File folder) {
-		File titleInfoFile = Stream.of(folder.listFiles()).filter(file -> file.getName().equals("info.jml")) // TODO
-																												// info
-																												// name
-				.findAny().orElse(null);
+		File titleInfoFile = Stream.of(folder.listFiles())
+				.filter(file -> file.getName().equals(this.config.getInfoFileName()))
+				.findAny()
+				.orElse(null);
 
 		return titleInfoFile;
 	}

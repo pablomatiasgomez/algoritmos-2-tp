@@ -1,10 +1,14 @@
 <app-config>
   <file-structure>
-    <albums-path>./albums</albums-path>
+    <albums-path>../albums</albums-path>
   </file-structure>
 
   <labels>
-    <divider>|</divider>
+    <divider>;</divider>
   </labels>
 
+  <labels>
+    <info-file-name>info.jml</info-file-name>
+  </labels>
+  
 </app-config>

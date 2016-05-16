@@ -24,10 +24,6 @@ public class TitleImpl implements Title {
 		return this.name;
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
 	@Override
 	public String getPath() {
 		return this.path;
