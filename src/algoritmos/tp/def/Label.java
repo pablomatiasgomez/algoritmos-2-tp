@@ -9,4 +9,6 @@ public interface Label {
 	public List<Title> getTitles();
 
 	public List<Label> getSublabels();
+	
+	public void addTitle(Title title);
 }
