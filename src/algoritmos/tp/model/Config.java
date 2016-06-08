@@ -21,35 +21,27 @@ public class Config {
 
 	public String getAlbumsPath() {
 		if (this.albumsPath == null) {
-			this.albumsPath = this.getAlbumsPathFromConfigFile();
+			this.albumsPath = this.getTextContent("albums-path");
 		}
 		return this.albumsPath;
 	}
 
-	private String getAlbumsPathFromConfigFile() {
-		return this.configFile.getElementsByTagName("albums-path").item(0).getTextContent();
-	}
-
 	public String getLabelDivider() {
 		if (this.labelDivider == null) {
-			this.labelDivider = this.getLabelDividerFromConfigFile();
+			this.labelDivider = this.getTextContent("divider");
 		}
 		return this.labelDivider;
 	}
 
-	private String getLabelDividerFromConfigFile() {
-		return this.configFile.getElementsByTagName("divider").item(0).getTextContent();
-	}
-
 	public String getInfoFileName() {
 		if (this.infoFileName == null) {
-			this.infoFileName = this.getInfoFileNameFromConfigFile();
+			this.infoFileName = this.getTextContent("info-file-name");
 		}
 		return this.infoFileName;
 	}
 
-	private String getInfoFileNameFromConfigFile() {
-		return this.configFile.getElementsByTagName("info-file-name").item(0).getTextContent();
+	private String getTextContent(String key) {
+		return this.configFile.getElementsByTagName(key).item(0).getTextContent();
 	}
 
 	private Document setConfigFile(String configPath) {
@@ -62,6 +54,5 @@ public class Config {
 			throw new RuntimeException(e);
 		}
 	}
-
 
 }
