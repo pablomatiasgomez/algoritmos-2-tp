@@ -1,9 +1,9 @@
 package algoritmos.tp.model;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import algoritmos.tp.def.Label;
 import algoritmos.tp.def.Title;
@@ -11,17 +11,10 @@ import algoritmos.tp.def.Title;
 public class LabelImpl implements Label {
 
 	private String name;
-	private Set<Title> titles;
 	private Set<Label> sublabels;
 
 	public LabelImpl(String name) {
-		this.titles = new HashSet<Title>();
 		this.name = name;
-	}
-
-	@Override
-	public void addTitle(Title title){
-		this.titles.add(title);
 	}
 
 	@Override
@@ -35,7 +28,9 @@ public class LabelImpl implements Label {
 
 	@Override
 	public List<Title> getTitles() {
-		return new ArrayList<>(this.titles);
+		return LibraryImpl.getInstance().getTitles().stream().filter(title -> {
+			return title.getAtts().values().contains(this);
+		}).collect(Collectors.toList());
 	}
 
 	@Override

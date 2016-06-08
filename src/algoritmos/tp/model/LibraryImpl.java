@@ -97,7 +97,6 @@ public class LibraryImpl implements Library {
 	private Title createTitle(String name, String path, File titleInfoFile) {
 		Hashtable<Filter, List<Label>> attributes = this.processInfoFile(titleInfoFile);
 		Title title = new TitleImpl(name, path, attributes);
-		attributes.values().forEach(labelList -> labelList.forEach(label -> {label.addTitle(title);}));
 		this.titles.add(title);
 		return title;
 	}
