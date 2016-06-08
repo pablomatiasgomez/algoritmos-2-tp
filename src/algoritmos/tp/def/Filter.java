@@ -8,6 +8,4 @@ public interface Filter {
 
 	public List<Label> getLabels();
 
-	public void addLabels(List<Label> labels);
-
 }

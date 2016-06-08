@@ -21,8 +21,8 @@ import algoritmos.tp.def.Title;
 public class LibraryImpl implements Library {
 
 	private List<Title> titles;
-	private Set<Filter> filters;
-	private Set<Label> labels;
+	private Set<FilterImpl> filters;
+	private Set<LabelImpl> labels;
 	private Config config;
 
 	private static LibraryImpl instance;
@@ -36,8 +36,8 @@ public class LibraryImpl implements Library {
 
 	private LibraryImpl() {
 		this.titles = new ArrayList<Title>();
-		this.filters = new HashSet<Filter>();
-		this.labels = new HashSet<Label>();
+		this.filters = new HashSet<FilterImpl>();
+		this.labels = new HashSet<LabelImpl>();
 
 		this.config = new Config("config.xml");
 
@@ -74,8 +74,7 @@ public class LibraryImpl implements Library {
 		return label.getTitles();
 	}
 
-	public List<Title> searchTitles(String path) {
-
+	private List<Title> searchTitles(String path) {
 		File[] folders = new File(path).listFiles();
 
 		List<Title> titles = Stream.of(folders).flatMap(folder -> {
@@ -97,7 +96,7 @@ public class LibraryImpl implements Library {
 	private Title createTitle(String name, String path, File titleInfoFile) {
 		Hashtable<Filter, List<Label>> attributes = this.processInfoFile(titleInfoFile);
 		Title title = new TitleImpl(name, path, attributes);
-		attributes.values().forEach(labelList -> labelList.forEach(label -> {label.addTitle(title);}));
+		attributes.values().forEach(labels -> labels.forEach(label -> ((LabelImpl)label).addTitle(title) ));
 		this.titles.add(title);
 		return title;
 	}
@@ -129,7 +128,7 @@ public class LibraryImpl implements Library {
 	}
 
 	private Filter createFilter(String filterName, List<Label> labels) {
-		Optional<Filter> filter = this.filters
+		Optional<FilterImpl> filter = this.filters
 				.stream()
 				.filter(f-> f.getName().equals(filterName))
 				.findFirst();
@@ -144,7 +143,7 @@ public class LibraryImpl implements Library {
 	}
 
 	private Label createLabel(String labelName){
-		Optional<Label> label = this.labels
+		Optional<LabelImpl> label = this.labels
 				.stream()
 				.filter(l-> l.getName().equals(labelName))
 				.findFirst();

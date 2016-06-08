@@ -19,11 +19,6 @@ public class FilterImpl implements Filter {
 	}
 
 	@Override
-	public void addLabels(List<Label> labels){
-		this.labels.addAll(labels);
-	}
-
-	@Override
 	public String getName() {
 		return this.name;
 	}
@@ -31,6 +26,10 @@ public class FilterImpl implements Filter {
 	@Override
 	public List<Label> getLabels() {
 		return new ArrayList<>(this.labels);
+	}
+
+	public void addLabels(List<Label> labels){
+		this.labels.addAll(labels);
 	}
 
 	@Override

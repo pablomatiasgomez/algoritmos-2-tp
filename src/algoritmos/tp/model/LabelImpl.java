@@ -20,11 +20,6 @@ public class LabelImpl implements Label {
 	}
 
 	@Override
-	public void addTitle(Title title){
-		this.titles.add(title);
-	}
-
-	@Override
 	public String getName() {
 		return this.name;
 	}
@@ -41,6 +36,10 @@ public class LabelImpl implements Label {
 	@Override
 	public List<Label> getSublabels() {
 		return new ArrayList<>(this.sublabels);
+	}
+
+	public void addTitle(Title title){
+		this.titles.add(title);
 	}
 
 	@Override
